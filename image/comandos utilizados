@@ -1,0 +1,40 @@
+sudo docker run -it ubuntu:20.04
+
+    apt update
+
+    # dependências básicas
+    apt install wget apt-transport-https gnupg dirmngr ca-certificates software-properties-common -y
+
+    #instalando o jdk
+    wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
+
+    echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+
+    apt-get update
+
+    apt-get install temurin-8-jdk -y
+
+    # instalando o mongo   
+    wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+    apt-get update
+
+    apt-get install -y mongodb-org=4.4.15 mongodb-org-server=4.4.15 mongodb-org-shell=4.4.15 mongodb-org-mongos=4.4.15 mongodb-org-tools=4.4.15
+
+    mkdir /data
+
+    cd /data
+
+    mkdir db
+
+    pkill -f mongod
+
+    # saindo do container
+    exit
+
+sudo docker commit (id do container obtido em sudo docker ps -a) api-springboot-mongodb
+
+sudo docker save api-springboot-mongodb > api-springboot-mongodb.tar
+
