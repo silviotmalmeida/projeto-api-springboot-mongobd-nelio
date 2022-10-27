@@ -1,9 +1,12 @@
 package com.silviotmalmeida.app.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 // classe que representa uma entidade User
@@ -23,6 +26,13 @@ public class User implements Serializable {
 
     private String name;
     private String email;
+
+    // o usuário deve conter a lista dos posts de sua autoria
+    // definindo como referência de uma nova coleção
+    // o atributo lazy = true desativa o carregamento automático dos posts na
+    // listagem de usuários, só sendo carregados através do getPosts()
+    @DBRef(lazy = true)
+    private List<Post> posts = new ArrayList<>();
 
     // construtor vazio (necessário para o framework)
     public User() {
@@ -60,6 +70,14 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
     // fim dos getters e setters
     // ------------------------------------------------------------------

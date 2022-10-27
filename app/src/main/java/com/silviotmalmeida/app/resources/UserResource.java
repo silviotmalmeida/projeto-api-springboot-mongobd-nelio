@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.silviotmalmeida.app.domain.Post;
 import com.silviotmalmeida.app.domain.User;
 import com.silviotmalmeida.app.dto.UserDTO;
 import com.silviotmalmeida.app.services.UserService;
@@ -53,10 +54,23 @@ public class UserResource {
         // obtendo o registro
         User obj = this.service.findById(id);
 
+        // filtrando os atibutos conforme dto
         UserDTO dto = new UserDTO(obj);
 
         // retorna a resposta com status 200 e registros no body
         return ResponseEntity.ok().body(dto);
+    }
+
+    // método que retorna os posts do usuário do id selecionado
+    // acessível via método GET, adicionando o parâmetro /id/posts
+    @GetMapping(value = "/{id}/posts")
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id) {
+
+        // obtendo os dados do usuário
+        User obj = this.service.findById(id);
+
+        // retorna a resposta com status 200 e registros no body
+        return ResponseEntity.ok().body(obj.getPosts());
     }
 
     // método que insere um registro no BD
