@@ -1,45 +1,48 @@
-version: '3.3'
+version: "3.3"
 services:
-#nome do servico
-  
+  #nome do servico
 
-
+  # declarando o mongodb
   mongo:
+    #construido a partir de uma imagem oficial
     image: mongo:4.4.17
+    #porta a ser exposta
     ports:
-      - 27017:27017  
+      - 27017:27017
+    #variaveis de ambiente
     environment:
       - MONGO_INTIDB_ROOT_USERNAME=rootuser
       - MONGO_INTIDB_ROOT_PASSOWRD=rootpass
+
+  # declarando o mongo-express, um client web para administracao do mongodb
   mongo-express:
+    #construido a partir de uma imagem oficial
     image: mongo-express:1.0.0-alpha.4
+    #porta a ser exposta
     ports:
       - 8081:8081
+    #variaveis de ambiente
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
       - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+    #
     restart: always
+    #dependencia
     depends_on:
       - mongo
 
-
+  #declarando a api
   api-springboot-mongodb:
-
     #construido a partir de uma imagem oficial
     image: eclipse-temurin:17-jdk-focal
-    
     #nome do conteiner
     container_name: api-springboot-mongodb
-
     #pastas compartilhadas
     volumes:
       #pasta do codigo fonte da aplicacao
       - "./app:/app"
-
     #porta a ser exposta
-    # ports:
-    #   - 8080:8080
-  
+    ports:
+      - 8080:8080
     #artifício para manter o container aberto
     tty: true
-  

@@ -1,5 +1,6 @@
 package com.silviotmalmeida.app.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class PostService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado"));
 	}
 
-	// método que os posts que contém o texto de busca
+	// método que retorna os posts que contém o texto de busca no título
 	public List<Post> findByTitle(String text) {
 
 		// obtendo os registros
@@ -43,5 +44,17 @@ public class PostService {
 
 		// utilizando @Query
 		return this.repository.searchTitle(text);
+	}
+
+	// método que retorna os posts que contém o texto de busca no título, corpo ou
+	// comentários, bem como pela data de publicação
+	public List<Post> fullSearch(String text, Date minDate, Date maxDate) {
+
+		// ajustando a data para considerar registros até o final do dia
+		maxDate = new Date(maxDate.getTime() + 24 * 60 * 60 * 1000);
+
+		// obtendo os registros
+		// utilizando @Query
+		return this.repository.fullSearch(text, minDate, maxDate);
 	}
 }

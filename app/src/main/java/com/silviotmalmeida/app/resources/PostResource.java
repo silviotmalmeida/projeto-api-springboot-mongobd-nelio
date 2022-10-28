@@ -1,5 +1,6 @@
 package com.silviotmalmeida.app.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,32 @@ public class PostResource {
 
         // obtendo os registros
         List<Post> list = this.service.findByTitle(text);
+
+        // retorna a resposta com status 200 e registros no body
+        return ResponseEntity.ok().body(list);
+    }
+
+    // método que retorna os posts que contém o texto de busca no título, corpo ou
+    // comentários, bem como pela data de publicação
+    // acessível via método GET, adicionando o parâmetro /fullsearch?text=&mindate=&maxdate=
+    @GetMapping(value = "/fullsearch")
+    public ResponseEntity<List<Post>> fullSearch(
+            @RequestParam(value = "text", defaultValue = "") String text,
+            @RequestParam(value = "mindate", defaultValue = "") String minDate,
+            @RequestParam(value = "maxdate", defaultValue = "") String maxDate) {
+
+        // decodificando o parâmetro recebido
+        text = URL.decodeParam(text);
+
+        // convertendo as datas recebidas
+        //caso a conversão apresente falha, retorna a data 0
+        Date min = URL.convertDate(minDate, new Date(0L));
+
+        //caso a conversão apresente falha, retorna a data atual
+        Date max = URL.convertDate(maxDate, new Date());
+
+        // obtendo os registros
+        List<Post> list = this.service.fullSearch(text, min, max);
 
         // retorna a resposta com status 200 e registros no body
         return ResponseEntity.ok().body(list);
